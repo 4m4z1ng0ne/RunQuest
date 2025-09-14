@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@2gis/mapgl": "^1.60.0",
+    "leaflet-2gis": "^1.0.1"
+  }
+}

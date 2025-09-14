@@ -1,0 +1,20 @@
+# Django Core
+Django>=4.2
+psycopg2-binary # For PostgreSQL
+
+# Django REST Framework
+djangorestframework>=3.14
+djangorestframework-simplejwt # For JWT Authentication
+django-filter==24.2 # For filtering in DRF
+drf-yasg==1.21.4 # For API documentation (Swagger)
+
+# GeoDjango & Maps
+djangorestframework-gis # GIS support for DRF
+django-leaflet # For Leaflet maps integration
+django-map-widgets # Map widgets for forms
+Shapely # For manipulation and analysis of geometrical objects
+
+# Utilities
+django-cors-headers==4.3.1 # For handling Cross-Origin Resource Sharing (CORS)
+Pillow>=10.0 # For image processing (e.g., Avatars)
+django-extensions # Collection of custom extensions for Django

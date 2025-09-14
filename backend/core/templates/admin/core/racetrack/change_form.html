@@ -1,0 +1,207 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_urls static leaflet_tags %}
+
+{% block extrahead %}
+    {{ block.super }}
+    {# Дополнительные стили или мета-теги, если нужны #}
+    <style>
+        /* Стили для карты Leaflet */
+        #id_route_definition_map { height: 400px; }
+    </style>
+{% endblock extrahead %}
+
+{% block extrastyle %}
+  {{ block.super }}
+    {# Дополнительные CSS файлы или инлайн стили #}
+{% endblock extrastyle %}
+
+{% block content %}
+    {{ block.super }}
+{% endblock content %}
+
+{% block footer %}
+    {{ block.super }}
+{% endblock footer %}
+
+{% block extrajs %}
+  {{ block.super }} {# Temporarily commented out to debug custom script execution #}
+  {% leaflet_js plugins="ALL" %} {# Убедитесь, что плагины Leaflet.draw и измерения загружены #}
+
+  <link rel="stylesheet" href="https://ppete2.github.io/Leaflet.PolylineMeasure/Leaflet.PolylineMeasure.css" />
+  <script src="https://ppete2.github.io/Leaflet.PolylineMeasure/Leaflet.PolylineMeasure.js"></script>
+
+  <script>
+  console.log("Inside extrajs block."); // Add this log
+  // Функция для расчета геодезического расстояния между двумя LatLng точками (формула Хаверсина)
+  function calculateGeodesicDistance(latlng1, latlng2) {
+      var R = 6371e3; // Земной радиус в метрах
+      var lat1 = latlng1.lat * Math.PI / 180; // φ, λ в радианах
+      var lat2 = latlng2.lat * Math.PI / 180;
+      var deltaLat = (lat2 - lat1);
+      var deltaLon = (latlng2.lng - latlng1.lng) * Math.PI / 180;
+
+      var a = Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
+              Math.cos(lat1) * Math.cos(lat2) *
+              Math.sin(deltaLon / 2) * Math.sin(deltaLon / 2);
+      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+      var d = R * c; // Расстояние в метрах
+      return d;
+  }
+
+  window.addEventListener("map:init", function (event) {
+    console.log("map:init event fired."); // Log when map:init fires
+    var map = event.detail.map; // Получаем ссылку на объект карты Leaflet
+    var lengthInput = document.getElementById("id_length_meters"); // Находим поле length_meters
+
+    if (lengthInput) {
+        console.log("Length input field found:", lengthInput); // Log if the input field is found
+    } else {
+        console.error("Length input field with ID 'id_length_meters' not found."); // Log if the input field is NOT found
+    }
+
+    // Находим слой рисования Leaflet.draw
+    var drawControl = null;
+    map.eachControl(function(control) {
+        if (control instanceof L.Control.Draw) {
+            drawControl = control;
+        }
+    });
+
+    console.log("Draw control found:", drawControl); // Log if drawControl was found
+
+    if (drawControl) {
+        // Добавляем контрол измерения Leaflet.PolylineMeasure
+        L.control.polylineMeasure({
+            position: 'topleft', // Позиция контрола
+            unit: 'metres', // Единицы измерения
+            clearMeasurementsOnStop: false, // Не очищать измерения после завершения рисования
+            showBearings: false, // Не показывать азимуты
+            showDistanceMarkers: true, // Показывать маркеры расстояния на линии
+            showArea: false, // Не показывать площадь для полигонов
+        }).addTo(map);
+
+
+        // Обработчик события создания слоя (например, полилинии)
+        map.on(L.Draw.Event.CREATED, function (event) {
+            var layer = event.layer;
+            console.log("Layer created:", layer);
+
+            if (layer instanceof L.Polyline) {
+                 // Попытка получить длину из PolylineMeasure, если он добавил ее как свойство
+                 if (typeof layer._distance !== 'undefined') {
+                     var calculatedLength = layer._distance; // Предполагаем, что плагин хранит длину в _distance
+                     console.log("Calculated length from _distance property (CREATED):", calculatedLength);
+                      if (lengthInput) {
+                          lengthInput.value = Math.floor(calculatedLength); // Устанавливаем значение, округляем в меньшую сторону
+                          console.log("Length input value set (CREATED):", lengthInput.value);
+                      }
+                 } else if (layer.getLatLngs) { // Fallback to our calculation if _distance is not available
+                    var latlngs = layer.getLatLngs();
+                    var totalLength = 0;
+                    console.log("Polyline LatLngs:", latlngs); // Log the LatLng array
+                    for (var i = 0; i < latlngs.length - 1; i++) {
+                        var segmentLength = calculateGeodesicDistance(latlngs[i], latlngs[i + 1]);
+                        console.log("Segment " + i + " length:", segmentLength, "meters"); // Log each segment length
+                        totalLength += segmentLength;
+                    }
+                    console.log("Calculated length from custom calculation (CREATED):", totalLength);
+                      if (lengthInput) {
+                        lengthInput.value = Math.floor(totalLength); // Устанавливаем значение, округляем в меньшую сторону
+                        console.log("Length input value set (CREATED):", lengthInput.value);
+                     }
+                }
+            }
+        });
+
+        // Обработчик события редактирования слоя (например, полилинии)
+            map.on(L.Draw.Event.EDITED, function (event) {
+            var layers = event.layers;
+            layers.eachLayer(function (layer) {
+                console.log("Layer edited:", layer);
+
+                     if (layer instanceof L.Polyline) {
+                    // Попытка получить длину из Leaflet.PolylineMeasure при редактировании
+                    // Логика схожа с CREATED, возможно, _distance также обновляется при редактировании
+                     if (typeof layer._distance !== 'undefined') {
+                         var calculatedLength = layer._distance;
+                         console.log("Calculated length from _distance property (EDITED):", calculatedLength);
+                          if (lengthInput) {
+                              lengthInput.value = Math.floor(calculatedLength);
+                               console.log("Length input value set (EDITED):", lengthInput.value);
+                          }
+                     } else if (layer.getLatLngs) {
+                            var latlngs = layer.getLatLngs();
+                            var totalLength = 0;
+                            console.log("Polyline LatLngs (edit):", latlngs); // Log the LatLng array on edit
+                            for (var i = 0; i < latlngs.length - 1; i++) {
+                                var segmentLength = calculateGeodesicDistance(latlngs[i], latlngs[i + 1]);
+                                console.log("Segment " + i + " length:", segmentLength, "meters"); // Log each segment length
+                                totalLength += segmentLength;
+                            }
+                            console.log("Calculated length from custom calculation (EDITED):", totalLength);
+                             if (lengthInput) {
+                                lengthInput.value = Math.floor(totalLength);
+                                console.log("Length input value set (EDITED):", lengthInput.value);
+                             }
+                     }
+                }
+            });
+        });
+
+         // Добавляем обработчики событий плагина Leaflet.PolylineMeasure
+    map.on('polylinemeasure:start', function(e) {
+        console.log("PolylineMeasure started.", e);
+    });
+
+    map.on('polylinemeasure:add-point', function(e) {
+        console.log("PolylineMeasure add point:", e);
+    });
+
+    map.on('polylinemeasure:finish', function(e) {
+        console.log("PolylineMeasure finished.", e);
+        // Extract length from e.layer and set lengthInput.value
+        if (e.layer && typeof e.layer._distance !== 'undefined') {
+             var calculatedLength = e.layer._distance; // Предполагаем, что плагин хранит длину в _distance
+             console.log("Calculated length from finish event:", calculatedLength);
+              if (lengthInput) {
+                  lengthInput.value = Math.floor(calculatedLength); // Устанавливаем значение, округляем в меньшую сторону
+                  console.log("Length input value set (FINISH):", lengthInput.value);
+              }
+         } else {
+             console.warn("Could not get distance from finish event layer.", e.layer);
+         }
+    });
+
+    map.on('polylinemeasure:change', function(e) {
+        console.log("PolylineMeasure changed:", e);
+         // Extract length from e.layer and set lengthInput.value
+         if (e.layer && typeof e.layer._distance !== 'undefined') {
+              var calculatedLength = e.layer._distance;
+              console.log("Calculated length from change event:", calculatedLength);
+               if (lengthInput) {
+                  lengthInput.value = Math.floor(calculatedLength);
+                  console.log("Length input value set (CHANGE):", lengthInput.value);
+               }
+         } else {
+             console.warn("Could not get distance from change event layer.", e.layer);
+         }
+    });
+
+    map.on('polylinemeasure:clear', function(e) {
+        console.log("PolylineMeasure cleared.", e);
+        if (lengthInput) {
+            lengthInput.value = ''; // Очищаем поле длины при очистке измерения
+            console.log("Length input value cleared.");
+        }
+    });
+
+    } else {
+        console.error("Leaflet.draw control not found.");
+    }
+  });
+
+  </script>
+{% endblock extrajs %}
+
+<script>console.log("Outside any block.");</script> {# Add this outside any block #}
