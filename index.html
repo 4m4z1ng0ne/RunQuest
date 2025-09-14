@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RunQuest - Running App Portfolio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+            padding: 40px 0;
+        }
+        
+        .header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .feature {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .feature:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        
+        .feature h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .feature p {
+            color: #666;
+            line-height: 1.8;
+        }
+        
+        .tech-stack {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 50px;
+        }
+        
+        .tech-stack h2 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2rem;
+        }
+        
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .tech-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border-left: 4px solid #667eea;
+        }
+        
+        .tech-item h4 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .tech-item p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .links {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .links h2 {
+            color: #667eea;
+            margin-bottom: 30px;
+            font-size: 2rem;
+        }
+        
+        .link-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .link-item {
+            background: #667eea;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: background 0.3s ease;
+            display: block;
+        }
+        
+        .link-item:hover {
+            background: #5a6fd8;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 50px;
+            padding: 30px 0;
+            opacity: 0.8;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .header p {
+                font-size: 1.1rem;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏃‍♂️ RunQuest</h1>
+            <p>Full-stack running app with Flutter frontend and Django REST API backend</p>
+        </div>
+        
+        <div class="features">
+            <div class="feature">
+                <h3>📱 Mobile App (Flutter)</h3>
+                <p>Cross-platform mobile application with GPS tracking, interactive maps, and gamification features. Built with Flutter for iOS and Android.</p>
+            </div>
+            
+            <div class="feature">
+                <h3>🖥️ Backend API (Django)</h3>
+                <p>RESTful API with PostGIS integration for geospatial data processing, user management, and real-time data synchronization.</p>
+            </div>
+            
+            <div class="feature">
+                <h3>🎮 Gamification</h3>
+                <p>Comprehensive level system, achievements, challenges, and leaderboards to motivate users and enhance engagement.</p>
+            </div>
+            
+            <div class="feature">
+                <h3>👥 Social Features</h3>
+                <p>Friends system, activity feed, joint runs, and social challenges for community building and motivation.</p>
+            </div>
+            
+            <div class="feature">
+                <h3>🗺️ GPS Tracking</h3>
+                <p>High-precision GPS tracking with route visualization, distance calculation, and performance analytics.</p>
+            </div>
+            
+            <div class="feature">
+                <h3>�� Documentation</h3>
+                <p>Complete documentation including API docs, architecture overview, installation guides, and contributing guidelines.</p>
+            </div>
+        </div>
+        
+        <div class="tech-stack">
+            <h2>🛠️ Technology Stack</h2>
+            <div class="tech-grid">
+                <div class="tech-item">
+                    <h4>Frontend</h4>
+                    <p>Flutter 3.3+<br>Dart<br>Provider State Management</p>
+                </div>
+                <div class="tech-item">
+                    <h4>Backend</h4>
+                    <p>Django 4.2+<br>Django REST Framework<br>PostgreSQL + PostGIS</p>
+                </div>
+                <div class="tech-item">
+                    <h4>Maps & Location</h4>
+                    <p>Flutter Map<br>Geolocator<br>GeoDjango</p>
+                </div>
+                <div class="tech-item">
+                    <h4>Authentication</h4>
+                    <p>JWT Tokens<br>Secure Storage<br>OAuth Integration</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="links">
+            <h2>🔗 Project Links</h2>
+            <div class="link-grid">
+                <a href="https://github.com/YOUR_USERNAME/RunQuest" class="link-item">
+                    <h4>📁 GitHub Repository</h4>
+                    <p>View source code</p>
+                </a>
+                <a href="https://github.com/YOUR_USERNAME/RunQuest/blob/main/README.md" class="link-item">
+                    <h4>📖 Documentation</h4>
+                    <p>Read full docs</p>
+                </a>
+                <a href="https://github.com/YOUR_USERNAME/RunQuest/releases" class="link-item">
+                    <h4>📦 Releases</h4>
+                    <p>Download latest</p>
+                </a>
+                <a href="https://github.com/YOUR_USERNAME/RunQuest/blob/main/API_DOCUMENTATION.md" class="link-item">
+                    <h4>🔌 API Docs</h4>
+                    <p>API reference</p>
+                </a>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>© 2024 RunQuest - Created by Азиз Мухаммадиев</p>
+            <p>Full-stack development portfolio project</p>
+        </div>
+    </div>
+</body>
+</html>
