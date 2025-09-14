@@ -178,9 +178,7 @@
 ## Контакты
 
 **Автор**: Азиз Мухаммадиев  
-**Email**: [ваш-email]  
-**GitHub**: [ваш-github]  
-**LinkedIn**: [ваш-linkedin]  
+**Email**: Aziztarorazizchikago@gmail.com  
 
 ---
 
